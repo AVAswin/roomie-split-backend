@@ -1,5 +1,7 @@
 package com.roomiesplit.auth.controller;
 
+import com.roomiesplit.auth.dto.AuthResponse;
+import com.roomiesplit.auth.dto.LoginRequest;
 import com.roomiesplit.auth.dto.RegisterRequest;
 import com.roomiesplit.auth.service.AuthService;
 import com.roomiesplit.common.response.ApiResponse;
@@ -25,6 +27,18 @@ public class AuthController {
                 true,
                 "User registered successfully",
                 null
+        );
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<AuthResponse> login(
+            @RequestBody LoginRequest request
+    ) {
+
+        return new ApiResponse<>(
+                true,
+                "Login successful",
+                authService.login(request)
         );
     }
 }
