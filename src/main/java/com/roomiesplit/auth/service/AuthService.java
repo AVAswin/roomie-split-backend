@@ -3,6 +3,7 @@ package com.roomiesplit.auth.service;
 import com.roomiesplit.auth.dto.AuthResponse;
 import com.roomiesplit.auth.dto.LoginRequest;
 import com.roomiesplit.auth.dto.RegisterRequest;
+import com.roomiesplit.auth.repository.RefreshTokenRepository;
 import com.roomiesplit.common.exception.UserAlreadyExistsException;
 import com.roomiesplit.common.security.JwtService;
 import com.roomiesplit.user.entity.Role;
@@ -11,6 +12,7 @@ import com.roomiesplit.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -21,6 +23,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public void register(RegisterRequest request) {
 
@@ -67,11 +71,35 @@ public class AuthService {
             );
         }
 
-        String token =
-                jwtService.generateToken(
-                        user
+        String accessToken =
+                jwtService.generateToken(user);
+
+        String refreshToken =
+                refreshTokenService
+                        .createRefreshToken(user)
+                        .getToken();
+
+        return new AuthResponse(
+                accessToken,
+                refreshToken
+        );
+    }
+
+    @Transactional
+    public void logout(
+            String email
+    ) {
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(
+                        () -> new RuntimeException(
+                                "User not found"
+                        )
                 );
 
-        return new AuthResponse(token);
+
+        refreshTokenRepository
+                .deleteByUser(user);
     }
 }

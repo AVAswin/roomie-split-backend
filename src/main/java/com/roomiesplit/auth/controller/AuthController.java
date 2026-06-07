@@ -1,12 +1,11 @@
 package com.roomiesplit.auth.controller;
 
-import com.roomiesplit.auth.dto.AuthResponse;
-import com.roomiesplit.auth.dto.LoginRequest;
-import com.roomiesplit.auth.dto.RegisterRequest;
+import com.roomiesplit.auth.dto.*;
 import com.roomiesplit.auth.service.AuthService;
 import com.roomiesplit.common.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,6 +38,22 @@ public class AuthController {
                 true,
                 "Login successful",
                 authService.login(request)
+        );
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(
+            Authentication authentication
+    ) {
+
+        authService.logout(
+                authentication.getName()
+        );
+
+        return new ApiResponse<>(
+                true,
+                "Logged out successfully",
+                null
         );
     }
 }

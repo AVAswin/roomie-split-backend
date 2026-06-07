@@ -1,7 +1,5 @@
 package com.roomiesplit.auth.dto;
 
-
-public record AuthResponse(
-        String accessToken,
+public record RefreshTokenRequest(
         String refreshToken
 ) {}
