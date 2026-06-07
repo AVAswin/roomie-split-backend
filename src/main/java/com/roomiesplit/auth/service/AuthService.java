@@ -5,6 +5,7 @@ import com.roomiesplit.auth.dto.LoginRequest;
 import com.roomiesplit.auth.dto.RegisterRequest;
 import com.roomiesplit.common.exception.UserAlreadyExistsException;
 import com.roomiesplit.common.security.JwtService;
+import com.roomiesplit.user.entity.Role;
 import com.roomiesplit.user.entity.User;
 import com.roomiesplit.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class AuthService {
                                 request.password()
                         )
                 )
+                .role(Role.USER)
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -67,7 +69,7 @@ public class AuthService {
 
         String token =
                 jwtService.generateToken(
-                        user.getEmail()
+                        user
                 );
 
         return new AuthResponse(token);

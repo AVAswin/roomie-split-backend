@@ -1,5 +1,6 @@
 package com.roomiesplit.common.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,8 +43,24 @@ public class JwtAuthenticationFilter
         String token =
                 authHeader.substring(7);
 
-        String email =
-                jwtService.extractEmail(token);
+        String email;
+        try {
+
+            email =
+                    jwtService.extractEmail(token);
+            // existing logic
+
+        } catch (ExpiredJwtException ex) {
+
+            response.setStatus(
+                    HttpServletResponse.SC_UNAUTHORIZED
+            );
+
+            response.getWriter().write(
+                    "JWT Token Expired"
+            );
+            return;
+        }
 
         if (email != null &&
                 SecurityContextHolder
