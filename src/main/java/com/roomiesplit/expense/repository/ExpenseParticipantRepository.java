@@ -2,6 +2,7 @@ package com.roomiesplit.expense.repository;
 
 import com.roomiesplit.expense.entity.Expense;
 import com.roomiesplit.expense.entity.ExpenseParticipant;
+import com.roomiesplit.expense.entity.ExpenseStatus;
 import com.roomiesplit.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -23,5 +24,9 @@ public interface ExpenseParticipantRepository
     findByExpenseIdAndUser(
             Long expenseId,
             User user
+    );
+
+    List<ExpenseParticipant> findByStatus(
+            ExpenseStatus status
     );
 }
