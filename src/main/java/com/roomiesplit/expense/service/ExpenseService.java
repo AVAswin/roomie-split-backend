@@ -9,6 +9,7 @@ import com.roomiesplit.expense.repository.ExpenseRepository;
 import com.roomiesplit.house.entity.House;
 import com.roomiesplit.house.entity.HouseMember;
 import com.roomiesplit.house.repository.HouseMemberRepository;
+import com.roomiesplit.notification.service.NotificationService;
 import com.roomiesplit.user.entity.User;
 import com.roomiesplit.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class ExpenseService {
     private final HouseMemberRepository houseMemberRepository;
     private final ExpenseRepository expenseRepository;
     private final ExpenseParticipantRepository expenseParticipantRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public CreateExpenseResponse createExpense(String email, CreateExpenseRequest request) {
@@ -97,6 +99,19 @@ public class ExpenseService {
                             .build();
 
             expenseParticipantRepository.save(participant);
+
+            notificationService.createNotification(
+
+                    member.getUser(),
+
+                    "New Expense Added",
+
+                    user.getName()
+                            + " added "
+                            + request.title()
+                            + ". You owe ₹"
+                            + shareAmount
+            );
         }
 
         return new CreateExpenseResponse(
