@@ -22,6 +22,7 @@ public class SecurityConfig {
     ) throws Exception {
 
         http
+                .cors(cors -> {}) // to enable frontend to get access to talk to backend
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
@@ -47,4 +48,6 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
 }

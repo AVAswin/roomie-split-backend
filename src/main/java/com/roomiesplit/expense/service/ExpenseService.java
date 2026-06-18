@@ -180,6 +180,9 @@ public class ExpenseService {
 
                 .map(participant ->
                         new MyDueResponse(
+                                participant
+                                        .getExpense()
+                                        .getId(),
 
                                 participant
                                         .getExpense()
